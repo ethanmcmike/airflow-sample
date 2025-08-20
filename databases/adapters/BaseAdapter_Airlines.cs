@@ -10,7 +10,7 @@ namespace Airflow.Data
 {
     /// <summary>
     /// Database adapter for the Airflow core database
-    /// Partial class for airline functionality
+    /// Partial class for airline reading functionality
     /// </summary>
     public partial class AirflowAdapter
     {
@@ -200,10 +200,10 @@ namespace Airflow.Data
         }
 
         /// <summary>
-        /// Selects airline
+        /// Selects the number of each aircraft type in the given airline's fleet
         /// </summary>
-        /// <param name="airlineID"></param>
-        /// <returns></returns>
+        /// <param name="airlineID">An airline ID defined by the database</param>
+        /// <returns>A Dictionary with the aircraft type ID as the key and the number of aircraft of that type in the fleet as the value</returns>
         public Dictionary<int, int> GetFleet(int airlineID)
         {
             var result = new Dictionary<int, int>();
@@ -225,6 +225,11 @@ namespace Airflow.Data
             return result;
         }
 
+        /// <summary>
+        /// Selects the number of each aircraft type in airlines' fleets
+        /// </summary>
+        /// <param name="airlineIDs">A set of airline IDs defined by the database</param>
+        /// <returns>A Dictionary where the key is the given airline IDs and the value is another Dictionary where the key is an aircraft type ID and the value is the number of that aircraft type in the airline's fleet</returns>
         public Dictionary<int, Dictionary<int, int>> GetFleets(IEnumerable<int> airlineIDs)
         {
             var result = new Dictionary<int, Dictionary<int, int>>();
@@ -256,119 +261,5 @@ namespace Airflow.Data
 
             return result;
         }
-
-#if WRITE
-
-        public void InsertAirlineRoute(string airlineIcao, string originIcao, string destIcao, string aircraftTypeIcao, int altitude)
-        {
-            var airline = GetAirlineID(airlineIcao);                                //TODO Pass ICAOs to script and find IDs in SQL
-            var origin = GetAirportID(originIcao);
-            var dest = GetAirportID(destIcao);
-            var aircraftType = GetAircraftTypeId(aircraftTypeIcao);
-
-            if (airline == 0)
-                throw new Exception($"Could not find airline {airlineIcao}");
-
-            if (origin == 0)
-                throw new Exception($"Could not find airport {originIcao}");
-
-            if (dest == 0)
-                throw new Exception($"Could not find airport {destIcao}");
-
-            if (aircraftType == 0)
-                throw new Exception($"Could not find aircraft type {aircraftTypeIcao}");
-
-            var values = $"({airline},{origin},{dest},{aircraftType},{altitude})";
-
-            var script = GetScript("insert_airline_route");
-            script.SetValue("values", values);
-            ExecuteNonQuery(script);
-        }
-
-        public void InsertRoute(string region, string originIcao, string destIcao, string route)
-        {
-            var origin = GetAirportID(originIcao);
-            var dest = GetAirportID(destIcao);
-
-            var values = $"({origin},{dest},'{route}')";
-
-            var script = GetScript("insert_route");
-            script.SetValue("region", region);
-            script.SetValue("values", values);
-            ExecuteNonQuery(script);
-        }
-
-        public void Insert(IEnumerable<Airline> airlines)
-        {
-            var script = GetScript("insert_airlines");
-
-            var values = "";
-
-            foreach (var airline in airlines)
-            {
-                var name = airline.Name.Replace("'", "\'");
-
-                values += $"('{airline.ICAO}','{airline.IATA}','{name}','{airline.Callsign}'),";
-            }
-            values = values.TrimEnd(',');
-
-            script.SetValue("values", values);
-
-            ExecuteNonQuery(script);
-        }
-
-        /// <summary>
-        /// Copies from "airline_data" table
-        /// </summary>
-        public int ImportAirlines(string tableName)
-        {
-            var script = GetScript("import_airline_data");
-            script.SetValue("table_name", tableName);
-
-            using (var reader = ExecuteQuery(script))
-            {
-                if (reader.Read())
-                {
-                    return reader.GetInt32(0);
-                }
-            }
-
-            return 0;
-        }
-
-        public int ImportOperators(string tableName)
-        {
-            var script = GetScript("import_operators");
-            script.SetValue("table_name", tableName);
-
-            using (var reader = ExecuteQuery(script))
-            {
-                if (reader.Read())
-                {
-                    return reader.GetInt32(0);
-                }
-            }
-
-            return 0;
-        }
-
-        public int ImportFleets(string tableName)
-        {
-            var script = GetScript("import_fleets");
-            script.SetValue("table_name", tableName);
-
-            using (var reader = ExecuteQuery(script))
-            {
-                if (reader.Read())
-                {
-                    return reader.GetInt32(0);
-                }
-            }
-
-            return 0;
-        }
-
-#endif
-
     }
 }
