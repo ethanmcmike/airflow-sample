@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Page
+  xmlns="http://mcmikeengine.com/ui"
+  xmlns:menu="Airflow.Mania.Windows.Scenes.MainMenu, Airflow.Mania.Windows"
+  xmlns:map="Airflow.Windows.Objects.PositionMap, Airflow.Windows"
+  Class="McMikeEngine.UI.Navigation.Page, McMikeEngine"
+  Name="Root"
+  WidthMode="MATCH_PARENT"
+  HeightMode="MATCH_PARENT"
+  Padding="32">
+
+  <!--Background-->
+  <ImagePanel
+    Name="BackgroundImage"
+    WidthMode="MATCH_PARENT"
+    HeightMode="MATCH_PARENT"
+    FillMode="FILL_MAX"
+    Image="{Binding BackgroundImage}"/>
+
+  <!--Logo-->
+  <ImagePanel
+    Name="LogoImage"
+    Width="512"
+    HeightMode="WRAP_CONTENT"
+    FillMode="FILL_MIN"
+    Image="{Binding LogoImage}"/>
+
+  <!--Version-->
+  <TextBlock
+    HorizontalAlignment="RIGHT"
+    VerticalAlignment="BOTTOM"
+    Text="{Binding Version}"
+    FontSize="24"
+    NormalColor="0.5"/>
+
+  <!--Main Button Stack-->
+  <StackLayout
+    WidthMode="WRAP_CONTENT"
+    HeightMode="WRAP_CONTENT"
+    HorizontalAlignment="LEFT"
+    VerticalAlignment="CENTER"
+    Spacing="12">
+
+    <TextButton
+      Text="Practice"
+      Command="{Binding PracticeCommand}"/>
+
+    <TextButton
+      Text="Career"
+      Command="{Binding CareerCommand}"
+      IsActive="false"/>
+
+    <TextButton
+      Text="Tutorial"
+      Command="{Binding TutorialCommand}"/>
+
+  </StackLayout>
+
+  <!--Symbol Button Stack-->
+  <StackLayout
+    IsVertical="false"
+    WidthMode="WRAP_CONTENT"
+    HeightMode="WRAP_CONTENT"
+    HorizontalAlignment="LEFT"
+    VerticalAlignment="BOTTOM"
+    Spacing="12">
+
+    <!--Exit-->
+    <Button
+      Style="SymbolButton"
+      Command="{Binding ExitCommand}">
+
+      <SymbolPanel
+        Name="ExitSymbol"
+        SymbolIndex="8"
+        Width="32"
+        Height="32"
+        Style="SymbolButton"/>
+
+      <Tooltip>
+
+        <Panel
+          WidthMode="WRAP_CONTENT"
+          HeightMode="WRAP_CONTENT"
+          NormalColor="#1e1e1e"
+          BorderColor="#2e2e2e"
+          Padding="8">
+
+          <TextBlock
+            Text="Exit"
+            Style="Tooltip"/>
+
+        </Panel>
+
+      </Tooltip>
+
+    </Button>
+
+    <!--Report Bugs Button-->
+    <Button
+      Style="SymbolButton"
+      Command="{Binding ReportCommand}">
+
+      <SymbolPanel
+        Name="BugSymbol"
+        SymbolIndex="10"
+        Width="32"
+        Height="32"
+        Style="SymbolButton"/>
+
+      <Tooltip>
+
+        <Panel
+          WidthMode="WRAP_CONTENT"
+          HeightMode="WRAP_CONTENT"
+          NormalColor="#1e1e1e"
+          BorderColor="#2e2e2e"
+          Padding="8">
+
+          <TextBlock
+            Text="Report Bugs"
+            Style="Tooltip"/>
+
+        </Panel>
+
+      </Tooltip>
+
+    </Button>
+
+    <!--Settings-->
+    <Button
+      Style="SymbolButton"
+      IsEnabled="false">
+
+      <SymbolPanel
+        Name="SettingsSymbol"
+        SymbolIndex="4"
+        Width="32"
+        Height="32"
+        Style="SymbolButton"/>
+
+    </Button>
+
+  </StackLayout>
+
+</Page>
